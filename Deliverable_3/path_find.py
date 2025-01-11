@@ -3,6 +3,7 @@ import math
 import heapq
 
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 import numpy as np
 import random
 
@@ -15,7 +16,7 @@ class Cell:
         self.parent_i = 0
     # Parent cell's column index
         self.parent_j = 0
- # Total cost of the cell (g + h)
+    # Total cost of the cell (g + h)
         self.f = float('inf')
     # Cost from start to this cell
         self.g = float('inf')
@@ -46,8 +47,6 @@ def is_destination(row, col, dest):
     return row == dest[0] and col == dest[1]
 
 # Calculate the heuristic value of a cell (Euclidean distance to destination)
-
-
 def calculate_h_value(row, col, dest):
     return ((row - dest[0]) ** 2 + (col - dest[1]) ** 2) ** 0.5
 
@@ -71,6 +70,10 @@ def trace_path(cell_details, dest):
 
     return path
 
+"""
+ Finds the random two cells and 
+ sets them as start and finish
+"""
 def find_random_cells(grid):
     start = [random.randint(0, 15), random.randint(0, 15)]
     while True:
@@ -88,6 +91,9 @@ def find_random_cells(grid):
 
     return (tuple(start), tuple(finish))
 
+"""
+ Find the two most distant points on the grid
+"""
 def find_most_distant(grid):
     start = [random.randint(0, 15), 0]
     while True:
@@ -105,6 +111,9 @@ def find_most_distant(grid):
 
     return (tuple(start), tuple(finish))
 
+"""
+ Enter your own points in the terminal
+"""
 def enter_own_points(grid):
     start = input("Please enter the start point in the shape: (x,y)\n")
     finish = input("Please enter the finish point in the shape: (x,y)\n")
@@ -114,6 +123,11 @@ def enter_own_points(grid):
 
     return (tuple(start), tuple(finish))
 
+"""
+ Click on the two points 
+ First one will be the start
+ Second will be the finish
+"""
 def find_own_points(grid):
     plt.imshow(grid, cmap="binary_r") 
     plt.xticks([]) 
@@ -201,8 +215,20 @@ def a_star_search(grid, src, dest):
     print("Failed to find the destination cell")
     return None
 
-def plot_path(grid, path):
-    plt.imshow(grid, cmap="binary_r") 
+"""
+ Plot the path on the given grid
+ Closes on-click
+"""
+def plot_path(grid, path, num=0):
+
+    # Without this big the whole grid turns 
+    # black and red when there is no blocked path
+    if not np.any(grid == 2):
+        cmap = mcolors.ListedColormap(['black', 'white'])
+    else:
+        cmap = mcolors.ListedColormap(['black', 'white', 'red'])
+
+    plt.imshow(grid, cmap=cmap) 
 
     if path:
         path = np.array(path)
@@ -212,5 +238,7 @@ def plot_path(grid, path):
         plt.close()
 
     plt.gcf().canvas.mpl_connect('button_press_event', onclick)
+
+    plt.savefig(f"./figures/Path{num}.png")
 
     plt.show()

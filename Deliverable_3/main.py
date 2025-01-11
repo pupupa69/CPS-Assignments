@@ -10,13 +10,9 @@ import path_find as pf
 
 """
 
-world = pg.random_world()
-# pg.see(world, "Random 16x16 World")
-
-# world = pg.smarter_world(4, 50)
-# pg.see(world, "Smarter 16x16 World")
-
-# pg.see(world)
+# world = pg.random_world()
+world = pg.smarter_world(4, 50)
+pg.see(world, "Smarter world")
 
 
 """ 
@@ -48,12 +44,16 @@ pf.plot_path(world, path)
 
 """
     Block a path tile and make it background
+    until there is no path available
 
 """
+num=1
 
 while(path is not None):
-    world = pg.block_path(world)
+    world = pg.block_path(world, num)
 
     path = pf.a_star_search(world, start, finish)
 
-    pf.plot_path(world, path)
+    pf.plot_path(world, path, num)
+
+    num = num + 1
